@@ -21,16 +21,16 @@ class CPU extends MultiIOModule {
   /**
     You need to create the classes for these yourself
     */
-  // val IFBarrier  = Module(new IFBarrier).io
-  // val IDBarrier  = Module(new IDBarrier).io
-  // val EXBarrier  = Module(new EXBarrier).io
-  // val MEMBarrier = Module(new MEMBarrier).io
+  val IFID = Module(new IFID)
+  val IDEX  = Module(new IDEX)
+  val EXMEM  = Module(new EXMEM)
+  val MEMWB = Module(new MEMWB)
 
+  val IF = Module(new InstructionFetch)
   val ID  = Module(new InstructionDecode)
-  val IF  = Module(new InstructionFetch)
-  // val EX  = Module(new Execute)
+  val EX  = Module(new Execution)
   val MEM = Module(new MemoryFetch)
-  // val WB  = Module(new Execute) (You may not need this one?)
+  val WB  = Module(new WriteBack)
 
 
   /**
@@ -54,4 +54,13 @@ class CPU extends MultiIOModule {
   /**
     TODO: Your code here
     */
+  IFID.io.in <> IF.io.out
+  ID.io.in <> IFID.io.out
+  IDEX.io.in <> ID.io.out
+  EX.io.in <> IDEX.io.out
+  EXMEM.io.in <> EX.io.out
+  MEM.io.in <> EXMEM.io.out
+  MEMWB.io.in <> MEM.io.out
+  MEMWB.io.out <> WB.io.in
+  WB.io.out <> ID.io.in
 }

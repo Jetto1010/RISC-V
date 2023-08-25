@@ -18,9 +18,10 @@ class InstructionDecode extends MultiIOModule {
 
   val io = IO(
     new Bundle {
-      /**
-        * TODO: Your code here.
-        */
+      val in = Input(new IFIDBundle)
+      val wbin = Input(new WBIDBundle)
+
+      val out = Output(new IDEXBundle)
     }
   )
 
@@ -39,11 +40,19 @@ class InstructionDecode extends MultiIOModule {
   /**
     * TODO: Your code here.
     */
-  registers.io.readAddress1 := 0.U
-  registers.io.readAddress2 := 0.U
-  registers.io.writeEnable  := false.B
-  registers.io.writeAddress := 0.U
-  registers.io.writeData    := 0.U
+  registers.io.readAddress1 := io.in.instruction.registerRs1
+  registers.io.readAddress2 := io.in.instruction.immediateIType
+  registers.io.writeEnable  := io.wbin.RegWrite
+  registers.io.writeAddress := io.in.instruction.registerRd //add writeReg
+  registers.io.writeData    := io.wbin.Result
 
   decoder.instruction := 0.U.asTypeOf(new Instruction)
+
+  io.out.RegWrite := io.in.RegWrite
+  io.out.MemtoReg := io.in.MemtoReg
+  io.out.MemWrite := io.in.MemWrite
+  io.out.Branch := io.in.Branch
+  io.out.ALUSrc := io.in.ALUSrc
+  io.out.ALUControl := io.in.ALUControl
+  io.out.RegDest := io.in.RegDest
 }
