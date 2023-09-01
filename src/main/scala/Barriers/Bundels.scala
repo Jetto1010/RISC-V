@@ -10,16 +10,14 @@ class IDEXBundle extends Bundle {
   val pc = UInt(32.w)
   val op1 = UInt(32.w) // SrcA
   val op2 = UInt(32.w) // SrcB
-  val ALUControl = UInt(7.w) // opcode
-
+  val ALUOp = UInt(32.w)
   val RegWrite = UInt(32.w)
-  val MemtoReg = UInt(32.w)
+  val MemRead = UInt(32.w)
   val MemWrite = UInt(32.w)
   val Branch = UInt(32.w)
   val ALUSrc = UInt(32.w)
+
   val RegDest = UInt(32.w)
-  // val Rt = UInt(32.w)
-  // val Rd = UInt(32.w)
   val SignImm = UInt(32.w)
 }
 
@@ -27,7 +25,7 @@ class EXMEMBundle extends Bundle {
   val pc = UInt(32.w)
   val ALUOut = UInt(32.w)
   val RegWrite = UInt(32.w)
-  val MemtoReg = UInt(32.w)
+  val MemRead = UInt(32.w)
   val MemWrite = UInt(32.w)
   val Branch = UInt(32.w)
   val Zero = UInt(32.w)
@@ -38,7 +36,7 @@ class EXMEMBundle extends Bundle {
 
 class MEMWBBundle extends Bundle {
   val RegWrite = UInt(32.w)
-  val MemtoReg = UInt(32.w)
+  val MemRead = UInt(32.w)
   val ALUOut = UInt(32.w)
   val ReadData = UInt(32.w)
   val WriteReg = UInt(32.w)

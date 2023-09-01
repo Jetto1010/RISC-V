@@ -29,10 +29,10 @@ class Execution extends MultiIOModule {
     // COPY_B -> (),
     // DC     -> (),
   )
-  io.out.ALUOut := MuxLookup(io.in.opcode, 0.U(32.W), ALUopMap)
+  io.out.ALUOut := MuxLookup(io.in.ALUOp, 0.U(32.W), ALUopMap)
 
   io.out.RegWrite := io.in.RegWrite
-  io.out.MemtoReg := io.in.MemtoReg
+  io.out.MemRead := io.in.MemRead
   io.out.MemWrite := io.in.MemWrite
   io.out.Branch := io.in.Branch
 }

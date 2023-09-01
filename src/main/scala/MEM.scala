@@ -20,6 +20,7 @@ class MemoryFetch() extends MultiIOModule {
     new Bundle {
       val in = Input(new EXMEMBundle)
       val out = Output(new MEMWBBundle)
+      val outIF = Output(new MEMIFBundle)
     }
   )
 
@@ -43,7 +44,10 @@ class MemoryFetch() extends MultiIOModule {
   DMEM.io.writeEnable := false.B
 
   io.out.RegWrite := io.in.RegWrite
-  io.out.MemtoReg := io.in.MemtoReg
+  io.out.MemRead := io.in.MemRead
   io.out.ALUOut := io.in.ALUOut
   io.out.WriteReg := io.in.WriteReg
+
+  io.outIF.PCBranch := RegInit(0.U(32.W))
+  io.outIF.PCSrc := RegInit(0.U(32.W))
 }

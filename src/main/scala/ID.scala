@@ -48,11 +48,14 @@ class InstructionDecode extends MultiIOModule {
 
   decoder.instruction := 0.U.asTypeOf(new Instruction)
 
-  io.out.RegWrite := io.in.RegWrite
-  io.out.MemtoReg := io.in.MemtoReg
-  io.out.MemWrite := io.in.MemWrite
-  io.out.Branch := io.in.Branch
-  io.out.ALUSrc := io.in.ALUSrc
-  io.out.ALUControl := io.in.ALUControl
-  io.out.RegDest := io.in.RegDest
+  val zeroReg = RegInit(0.U(32.W))
+  io.out.RegWrite := zeroReg
+  io.out.MemRead := zeroReg
+  io.out.MemWrite := zeroReg
+  io.out.Branch := zeroReg
+  io.out.ALUSrc := zeroReg
+  io.out.ALUOp := zeroReg
+  io.out.RegDest := zeroReg
+
+  io.out.SignImm :=
 }
