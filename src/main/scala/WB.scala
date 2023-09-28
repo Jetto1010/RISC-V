@@ -9,7 +9,7 @@ class WriteBack extends Module {
     }
   )
 
-  io.out.RegWrite := io.wbin.RegWrite
+  io.out.RegWrite := io.in.controlSignals.regWrite
   io.out.WriteReg := io.in.WriteReg
-  io.out.Result := Mux(io.in.MemRead, io.in.ReadData, io.in.ALUOut)
+  io.out.Result := Mux(io.in.controlSignals.memRead, io.in.dataMEM, io.in.ALUOut)
 }

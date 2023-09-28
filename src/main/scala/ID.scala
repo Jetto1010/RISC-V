@@ -70,4 +70,5 @@ class InstructionDecode extends MultiIOModule {
   ))
   io.out.ALUop := decoder.ALUop
   io.out.rd2 := registers.io.readData2
+  io.out.WriteReg := decoder.instruction.registerRd
 }
