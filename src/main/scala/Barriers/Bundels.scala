@@ -9,7 +9,7 @@ class IFIDBundle extends Bundle {
 class IDEXBundle extends Bundle {
   val pc = UInt(32.W)
 
-  val controlSignals = new controlSignals
+  val controlSignals = new ControlSignals
   val BranchType = UInt(32.W)
   val Op1Select = UInt(32.W)
   val Op2Select = UInt(32.W)
@@ -20,9 +20,7 @@ class IDEXBundle extends Bundle {
 }
 
 class EXMEMBundle extends Bundle {
-  val pc = UInt(32.W)
-
-  val controlSignals = new controlSignals
+  val controlSignals = new ControlSignals
   val BranchType = UInt(32.W)
   val ALUOut = UInt(32.W)
   val rd2 = UInt(32.W)
@@ -31,7 +29,7 @@ class EXMEMBundle extends Bundle {
 }
 
 class MEMWBBundle extends Bundle {
-  val controlSignals = new controlSignals
+  val controlSignals = new ControlSignals
   val ALUOut = UInt(32.W)
   val dataMEM = UInt(32.W)
 }

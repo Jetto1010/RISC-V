@@ -60,7 +60,7 @@ class InstructionDecode extends MultiIOModule {
   io.out.BranchType := decoder.branchType
   io.out.Op1Select := MuxLookup(decoder.op1Select, 0.U, Array(
     Op1Select.rs1 -> registers.io.readData1,
-    Op1Select.PC  -> io.in.PC,
+    Op1Select.PC  -> io.in.pc,
     Op1Select.DC  -> 0.U,
   ))
   io.out.Op2Select := MuxLookup(decoder.op1Select, 0.U, Array(
