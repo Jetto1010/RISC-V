@@ -39,14 +39,13 @@ class MemoryFetch() extends MultiIOModule {
   /**
     * Your code here.
     */
-  DMEM.io.dataIn      := 0.U
-  DMEM.io.dataAddress := 0.U
-  DMEM.io.writeEnable := false.B
+  DMEM.io.dataIn      := io.in.rd2
+  DMEM.io.dataAddress := io.in.ALUOut
+  DMEM.io.writeEnable := io.in.controlSignals.memWrite
 
-  io.out.RegWrite := io.in.RegWrite
-  io.out.MemRead := io.in.MemRead
+  io.out.controlSignals := io.in.controlSignals
   io.out.ALUOut := io.in.ALUOut
-  io.out.WriteReg := io.in.WriteReg
+  io.out.dataMEM := DMEM.io.dataOut
 
   io.outIF.PCBranch := RegInit(0.U(32.W))
   io.outIF.PCSrc := RegInit(0.U(32.W))

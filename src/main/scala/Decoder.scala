@@ -62,10 +62,7 @@ class Decoder() extends Module {
 
   val NOP = List(N, N, N, N, N, branchType.DC, rs1, rs2, ImmFormat.DC, ALUOps.DC)
 
-  val decodedControlSignals = ListLookup(
-    io.instruction.asUInt(),
-    NOP,
-    opcodeMap)
+  val decodedControlSignals = ListLookup(io.instruction.asUInt(), NOP, opcodeMap)
 
   io.controlSignals.regWrite   := decodedControlSignals(0)
   io.controlSignals.memRead    := decodedControlSignals(1)

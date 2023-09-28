@@ -12,22 +12,22 @@ class Execution extends MultiIOModule {
   )
 
   val res = RegInit(UInt(32.W), 0.U)
-  val op1 = io.in.op1
-  val op2 = io.in.op2
+  val op1 = io.in.Op1Select
+  val op2 = io.in.Op2Select
   val ALUopMap = Array(
-    ADD    -> (op1 + op2),
-    SUB    -> (op1 - op2),
-    AND    -> (op1 & op2),
-    OR     -> (op1 | op2),
-    XOR    -> (op1 ^ op2),
-    // SLT    -> (),
-    // SLL    -> (),
-    // SLTU   -> (),
-    // SRL    -> (),
-    // SRA    -> (),
-    // COPY_A -> (),
-    // COPY_B -> (),
-    // DC     -> (),
+    ALUOps.ADD    -> (op1 + op2),
+    ALUOps.SUB    -> (op1 - op2),
+    ALUOps.AND    -> (op1 & op2),
+    ALUOps.OR     -> (op1 | op2),
+    ALUOps.XOR    -> (op1 ^ op2),
+    ALUOps.SLT    -> (op1.asSInt() < op2.asSInt()),
+    ALUOps.SLL    -> (op1 << op2(4, 0)),
+    ALUOps.SLTU   -> (op1 <  op2),
+    ALUOps.SRL    -> (op1 >> op2(4, 0)),
+    ALUOps.SRA    -> ((op1.asSInt() >> op2(4, 0)).asUInt()),
+    ALUOps.COPY_A -> (op1),
+    ALUOps.COPY_B -> (op2),
+    ALUOps.DC     -> (0.U),
   )
   io.out.ALUOut := MuxLookup(io.in.ALUOp, 0.U(32.W), ALUopMap)
 
@@ -35,4 +35,5 @@ class Execution extends MultiIOModule {
   io.out.MemRead := io.in.MemRead
   io.out.MemWrite := io.in.MemWrite
   io.out.Branch := io.in.Branch
+  io.out.rd2 := io.in.rd2
 }

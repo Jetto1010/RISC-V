@@ -2,53 +2,47 @@ package FiveStage
 import chisel3._
 
 class IFIDBundle extends Bundle {
-  val pc = UInt(32.w)
+  val pc = UInt(32.W)
   val instruction = new Instruction
 }
 
 class IDEXBundle extends Bundle {
-  val pc = UInt(32.w)
-  val op1 = UInt(32.w) // SrcA
-  val op2 = UInt(32.w) // SrcB
-  val ALUOp = UInt(32.w)
-  val RegWrite = UInt(32.w)
-  val MemRead = UInt(32.w)
-  val MemWrite = UInt(32.w)
-  val Branch = UInt(32.w)
-  val ALUSrc = UInt(32.w)
+  val pc = UInt(32.W)
 
-  val RegDest = UInt(32.w)
-  val SignImm = UInt(32.w)
+  val controlSignals = new controlSignals
+  val BranchType = UInt(32.W)
+  val Op1Select = UInt(32.W)
+  val Op2Select = UInt(32.W)
+  val ALUop = UInt(32.W)
+  val rd2 = UInt(32.W)
+  // val RegDest = UInt(32.W)
+  // val SignImm = UInt(32.W)
 }
 
 class EXMEMBundle extends Bundle {
-  val pc = UInt(32.w)
-  val ALUOut = UInt(32.w)
-  val RegWrite = UInt(32.w)
-  val MemRead = UInt(32.w)
-  val MemWrite = UInt(32.w)
-  val Branch = UInt(32.w)
-  val Zero = UInt(32.w)
-  val ALUOut = UInt(32.w)
-  val WriteData = UInt(32.w)
-  val WriteReg = UInt(32.w)
+  val pc = UInt(32.W)
+
+  val controlSignals = new controlSignals
+  val BranchType = UInt(32.W)
+  val ALUOut = UInt(32.W)
+  val rd2 = UInt(32.W)
+  // val WriteData = UInt(32.W)
+  // val WriteReg = UInt(32.W)
 }
 
 class MEMWBBundle extends Bundle {
-  val RegWrite = UInt(32.w)
-  val MemRead = UInt(32.w)
-  val ALUOut = UInt(32.w)
-  val ReadData = UInt(32.w)
-  val WriteReg = UInt(32.w)
+  val controlSignals = new controlSignals
+  val ALUOut = UInt(32.W)
+  val dataMEM = UInt(32.W)
 }
 
 class MEMIFBundle extends Bundle {
-  val PCSrc = UInt(32.w)
-  val PCBranch= UInt(32.w)
+  val PCSrc = UInt(32.W)
+  val PCBranch= UInt(32.W)
 }
 
 class WBIDBundle extends Bundle {
-  val RegWrite = UInt(32.w)
-  val WriteReg = UInt(32.w)
-  val Result = UInt(32.w)
+  val RegWrite = UInt(32.W)
+  val WriteReg = UInt(32.W)
+  val Result = UInt(32.W)
 }
