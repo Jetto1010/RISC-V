@@ -23,9 +23,9 @@ class IDEX extends Module {
     }
   )
 
-  val delay = RegInit(0.U(32.W))
+  val delay = Reg(new IDEXBundle)
   delay := io.in
-  io.out := io.in
+  io.out := delay
 }
 
 class EXMEM extends Module {
@@ -36,9 +36,9 @@ class EXMEM extends Module {
     }
   )
 
-  val delay = RegInit(0.U(32.W))
+  val delay = Reg(new EXMEMBundle)
   delay := io.in
-  io.out := io.in
+  io.out := delay
 }
 
 class MEMWB extends Module {
@@ -49,7 +49,7 @@ class MEMWB extends Module {
     }
   )
 
-  val delay = RegInit(0.U(32.W))
+  val delay = Reg(new MEMWBBundle)
   delay := io.in
-  io.out := io.in
+  io.out := delay
 }

@@ -7,7 +7,7 @@ class IFIDBundle extends Bundle {
 }
 
 class IDEXBundle extends Bundle {
-  val pc = UInt(32.W)
+  // val pc = UInt(32.W)
 
   val controlSignals = new ControlSignals
   val BranchType = UInt(32.W)

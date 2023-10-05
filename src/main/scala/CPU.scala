@@ -54,13 +54,13 @@ class CPU extends MultiIOModule {
   /**
     TODO: Your code here
     */
-  IFID.io.in <> IF.io.out
-  ID.io.in <> IFID.io.out
-  IDEX.io.in <> ID.io.out
-  EX.io.in <> IDEX.io.out
-  EXMEM.io.in <> EX.io.out
-  MEM.io.in <> EXMEM.io.out
-  MEMWB.io.in <> MEM.io.out
-  MEMWB.io.out <> WB.io.in
-  WB.io.out <> ID.io.in
+  IFID.io.in  <>  IF.io.out
+  ID.io.in    <>  IFID.io.out
+  IDEX.io.in  <>  ID.io.out
+  EX.io.in    <>  IDEX.io.out
+  EXMEM.io.in <>  EX.io.out
+  MEM.io.in   <>  EXMEM.io.out
+  MEMWB.io.in <>  MEM.io.out
+  WB.io.in    <>  MEMWB.io.out
+  WB.io.out   <>  ID.io.wbin
 }

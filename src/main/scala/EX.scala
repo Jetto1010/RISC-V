@@ -33,4 +33,5 @@ class Execution extends MultiIOModule {
   io.out.BranchType := io.in.BranchType
   io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
   io.out.rd2 := io.in.rd2
+  io.out.WriteReg := io.in.WriteReg
 }
