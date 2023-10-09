@@ -29,7 +29,7 @@ class InstructionDecode extends MultiIOModule {
   val decoder   = Module(new Decoder).io
 
 
-  /**
+  /**RegDest
     * Setup. You should not change this code
     */
   registers.testHarness.setup := testHarness.registerSetup
@@ -43,7 +43,7 @@ class InstructionDecode extends MultiIOModule {
   registers.io.readAddress1 := io.in.instruction.registerRs1
   registers.io.readAddress2 := io.in.instruction.registerRs2
   registers.io.writeEnable  := io.wbin.RegWrite
-  registers.io.writeAddress := io.in.instruction.registerRd
+  registers.io.writeAddress := io.wbin.RegDest
   registers.io.writeData    := io.wbin.Result
 
   val imm = MuxLookup(decoder.immType, 0.S(32.W), Array(
@@ -63,12 +63,13 @@ class InstructionDecode extends MultiIOModule {
     Op1Select.PC  -> io.in.pc,
     Op1Select.DC  -> 0.U,
   ))
-  io.out.Op2Select := MuxLookup(decoder.op1Select, 0.U, Array(
+  io.out.Op2Select := MuxLookup(decoder.op2Select, 0.U, Array(
     Op2Select.rs2 -> registers.io.readData2,
     Op2Select.imm -> imm.asUInt(),
     Op2Select.DC  -> 0.U,
   ))
   io.out.ALUop := decoder.ALUop
+  io.out.rd1 := registers.io.readData1
   io.out.rd2 := registers.io.readData2
-  io.out.WriteReg := decoder.instruction.registerRd
+  io.out.RegDest := decoder.instruction.registerRd
 }

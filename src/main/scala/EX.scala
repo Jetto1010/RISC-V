@@ -11,7 +11,6 @@ class Execution extends MultiIOModule {
     }
   )
 
-  val res = RegInit(UInt(32.W), 0.U)
   val op1 = io.in.Op1Select
   val op2 = io.in.Op2Select
   val ALUopMap = Array(
@@ -21,17 +20,15 @@ class Execution extends MultiIOModule {
     ALUOps.OR     -> (op1 | op2),
     ALUOps.XOR    -> (op1 ^ op2),
     ALUOps.SLT    -> (op1.asSInt() < op2.asSInt()),
-    ALUOps.SLL    -> (op1 << op2(4, 0)),
     ALUOps.SLTU   -> (op1 <  op2),
-    ALUOps.SRL    -> (op1 >> op2(4, 0)),
     ALUOps.SRA    -> ((op1.asSInt() >> op2(4, 0)).asUInt()),
-    ALUOps.COPY_A -> (op1),
-    ALUOps.COPY_B -> (op2),
-    ALUOps.DC     -> (0.U),
+    ALUOps.SRL    -> (op1 >> op2(4, 0)),
+    ALUOps.SLL    -> (op1 << op2(4, 0))
   )
   io.out.controlSignals := io.in.controlSignals
   io.out.BranchType := io.in.BranchType
   io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
+  io.out.rd1 := io.in.rd1
   io.out.rd2 := io.in.rd2
-  io.out.WriteReg := io.in.WriteReg
+  io.out.RegDest := io.in.RegDest
 }
