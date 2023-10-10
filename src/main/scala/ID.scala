@@ -69,7 +69,6 @@ class InstructionDecode extends MultiIOModule {
     Op2Select.DC  -> 0.U,
   ))
   io.out.ALUop := decoder.ALUop
-  io.out.rd1 := registers.io.readData1
   io.out.rd2 := registers.io.readData2
   io.out.RegDest := decoder.instruction.registerRd
 }

@@ -28,7 +28,6 @@ class Execution extends MultiIOModule {
   io.out.controlSignals := io.in.controlSignals
   io.out.BranchType := io.in.BranchType
   io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
-  io.out.rd1 := io.in.rd1
   io.out.rd2 := io.in.rd2
   io.out.RegDest := io.in.RegDest
 }

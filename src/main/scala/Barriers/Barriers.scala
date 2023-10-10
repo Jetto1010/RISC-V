@@ -52,4 +52,6 @@ class MEMWB extends Module {
   val delay = Reg(new MEMWBBundle)
   delay := io.in
   io.out := delay
+
+  io.out.dataMEM := io.in.dataMEM
 }
