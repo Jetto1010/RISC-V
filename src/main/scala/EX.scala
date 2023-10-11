@@ -14,20 +14,34 @@ class Execution extends MultiIOModule {
   val op1 = io.in.Op1Select
   val op2 = io.in.Op2Select
   val ALUopMap = Array(
-    ALUOps.ADD    -> (op1 + op2),
-    ALUOps.SUB    -> (op1 - op2),
-    ALUOps.AND    -> (op1 & op2),
-    ALUOps.OR     -> (op1 | op2),
-    ALUOps.XOR    -> (op1 ^ op2),
-    ALUOps.SLT    -> (op1.asSInt() < op2.asSInt()),
-    ALUOps.SLTU   -> (op1 <  op2),
-    ALUOps.SRA    -> ((op1.asSInt() >> op2(4, 0)).asUInt()),
-    ALUOps.SRL    -> (op1 >> op2(4, 0)),
-    ALUOps.SLL    -> (op1 << op2(4, 0))
+    ALUOps.ADD  -> (op1 + op2),
+    ALUOps.SUB  -> (op1 - op2),
+    ALUOps.AND  -> (op1 & op2),
+    ALUOps.OR   -> (op1 | op2),
+    ALUOps.XOR  -> (op1 ^ op2),
+    ALUOps.SLT  -> (op1.asSInt() < op2.asSInt()),
+    ALUOps.SLTU -> (op1 <  op2),
+    ALUOps.SRA  -> ((op1.asSInt() >> op2(4, 0)).asUInt()),
+    ALUOps.SRL  -> (op1 >> op2(4, 0)),
+    ALUOps.SLL  -> (op1 << op2(4, 0)),
+    ALUOps.DC   -> (0.U)
   )
+
+  val BranchMap = Array(
+    branchType.beq  -> (op1 === op2),
+    branchType.neq  -> (op1 =/= op2),
+    branchType.gte  -> (op1 >= op2),
+    branchType.lt   -> (op1 < op2),
+    branchType.gteu -> (op1.asSInt() >= op2.asSInt()),
+    branchType.ltu  -> (op1.asSInt() <  op2.asSInt()),
+    branchType.jump -> (Bool(true)),
+    branchType.DC   -> (Bool(false)),
+  )
+
   io.out.controlSignals := io.in.controlSignals
-  io.out.BranchType := io.in.BranchType
+  io.out.BranchOut := MuxLookup(io.in.BranchType, 0.U(1.W), BranchMap)
   io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
   io.out.rd2 := io.in.rd2
   io.out.RegDest := io.in.RegDest
+  io.out.NewPC := (io.in.pc.asSInt() - 4.S + op2.asSInt()).asUInt
 }
