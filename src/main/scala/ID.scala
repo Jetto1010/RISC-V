@@ -66,7 +66,7 @@ class InstructionDecode extends MultiIOModule {
   ))
   io.out.Op2Select := MuxLookup(decoder.op2Select, 0.U, Array(
     Op2Select.rs2 -> registers.io.readData2,
-    Op2Select.imm -> imm.asUInt(),
+    Op2Select.imm -> imm,
     Op2Select.DC  -> 0.U,
   ))
   io.out.ALUop := decoder.ALUop

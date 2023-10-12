@@ -78,12 +78,12 @@ class Decoder() extends Module {
     JAL    -> List(Y,        N,       N,        N,        Y,    branchType.jump, PC,            Op2Select.DC, JTYPE,     ALUOps.DC),
     JALR   -> List(Y,        N,       N,        N,        Y,    branchType.jump, PC,            Op2Select.DC, ITYPE,     ALUOps.DC),
 
-    BEQ    -> List(N,        N,       N,        Y,        N,    branchType.beq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.DC),
-    BNE    -> List(N,        N,       N,        Y,        N,    branchType.neq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.DC),
-    BLT    -> List(N,        N,       N,        Y,        N,    branchType.lt,   Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.DC),
-    BGE    -> List(N,        N,       N,        Y,        N,    branchType.gte,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.DC),
-    BLTU   -> List(N,        N,       N,        Y,        N,    branchType.ltu,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.DC),
-    BGEU   -> List(N,        N,       N,        Y,        N,    branchType.gteu, Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.DC),
+    BEQ    -> List(N,        N,       N,        Y,        N,    branchType.beq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
+    BNE    -> List(N,        N,       N,        Y,        N,    branchType.neq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
+    BLT    -> List(N,        N,       N,        Y,        N,    branchType.lt,   Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
+    BGE    -> List(N,        N,       N,        Y,        N,    branchType.gte,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
+    BLTU   -> List(N,        N,       N,        Y,        N,    branchType.ltu,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
+    BGEU   -> List(N,        N,       N,        Y,        N,    branchType.gteu, Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
     )
 
 

@@ -20,7 +20,7 @@ class IDEXBundle extends Bundle {
 
 class EXMEMBundle extends Bundle {
   val controlSignals = new ControlSignals
-  val BranchOut = UInt(1.W)
+  val BranchOut = Bool()
   val ALUOut = UInt(32.W)
   val rd2 = UInt(32.W)
   val RegDest = UInt(5.W)
@@ -36,7 +36,7 @@ class MEMWBBundle extends Bundle {
 
 class MEMIFBundle extends Bundle {
   val NewPC = UInt(32.W)
-  val Branch= Bool()
+  val PCSel = Bool()
 }
 
 class WBIDBundle extends Bundle {

@@ -50,7 +50,7 @@ class InstructionFetch extends MultiIOModule {
   instruction := IMEM.io.instruction.asTypeOf(new Instruction)
   io.out.instruction := instruction
   
-  PC := Mux(io.in.Branch, io.in.NewPC, PC + 4.U)
+  PC := Mux(io.in.PCSel, io.in.NewPC, PC + 4.U)
 
   /**
     * Setup. You should not change this code.

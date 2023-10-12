@@ -43,5 +43,5 @@ class Execution extends MultiIOModule {
   io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
   io.out.rd2 := io.in.rd2
   io.out.RegDest := io.in.RegDest
-  io.out.NewPC := (io.in.pc.asSInt() - 4.S + op2.asSInt()).asUInt
+  io.out.NewPC := Mux(io.in.BranchType === branchType.jump, io.in.pc + op2, (op1 + op2).asUInt() & "hfffffffe".U)
 }
