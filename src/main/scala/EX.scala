@@ -30,18 +30,20 @@ class Execution extends MultiIOModule {
   val BranchMap = Array(
     branchType.beq  -> (op1 === op2),
     branchType.neq  -> (op1 =/= op2),
-    branchType.gte  -> (op1 >= op2),
-    branchType.lt   -> (op1 < op2),
-    branchType.gteu -> (op1.asSInt() >= op2.asSInt()),
-    branchType.ltu  -> (op1.asSInt() <  op2.asSInt()),
-    branchType.jump -> (Bool(true)),
+    branchType.gte  -> (op1.asSInt() >= op2.asSInt()),
+    branchType.lt   -> (op1.asSInt() < op2.asSInt()),
+    branchType.gteu -> (op1 >= op2),
+    branchType.ltu  -> (op1 <  op2),
+    branchType.jal  -> (Bool(true)),
+    branchType.jalr -> (Bool(true)),
     branchType.DC   -> (Bool(false)),
   )
 
   io.out.controlSignals := io.in.controlSignals
   io.out.BranchOut := MuxLookup(io.in.BranchType, 0.U(1.W), BranchMap)
   io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
+
   io.out.rd2 := io.in.rd2
   io.out.RegDest := io.in.RegDest
-  io.out.NewPC := Mux(io.in.BranchType === branchType.jump, io.in.pc + op2, (op1 + op2).asUInt() & "hfffffffe".U)
+  io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (io.in.pc + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
 }

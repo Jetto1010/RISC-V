@@ -53,7 +53,7 @@ class InstructionDecode extends MultiIOModule {
     ImmFormat.UTYPE -> decoder.instruction.immediateUType,
     ImmFormat.JTYPE -> decoder.instruction.immediateJType,
     ImmFormat.DC    -> 0.S(32.W)
-  ))
+  )).asUInt()
 
   decoder.instruction := io.in.instruction
   io.out.pc := io.in.pc
@@ -72,4 +72,7 @@ class InstructionDecode extends MultiIOModule {
   io.out.ALUop := decoder.ALUop
   io.out.rd2 := registers.io.readData2
   io.out.RegDest := decoder.instruction.registerRd
+  io.out.Imm := imm
 }
+
+

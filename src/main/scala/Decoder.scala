@@ -75,8 +75,8 @@ class Decoder() extends Module {
     LUI    -> List(Y,        N,       N,        N,        N,    branchType.DC,   Op1Select.DC,  imm,       UTYPE,        ALUOps.ADD),
     AUIPC  -> List(Y,        N,       N,        N,        N,    branchType.DC,   PC,            imm,       UTYPE,        ALUOps.ADD),
 
-    JAL    -> List(Y,        N,       N,        N,        Y,    branchType.jump, PC,            Op2Select.DC, JTYPE,     ALUOps.DC),
-    JALR   -> List(Y,        N,       N,        N,        Y,    branchType.jump, PC,            Op2Select.DC, ITYPE,     ALUOps.DC),
+    JAL    -> List(Y,        N,       N,        N,        Y,    branchType.jal , PC,            imm,       JTYPE,        ALUOps.ADD),
+    JALR   -> List(Y,        N,       N,        N,        Y,    branchType.jalr, rs1,           imm,       ITYPE,        ALUOps.ADD),
 
     BEQ    -> List(N,        N,       N,        Y,        N,    branchType.beq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
     BNE    -> List(N,        N,       N,        Y,        N,    branchType.neq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
