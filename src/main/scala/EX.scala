@@ -24,8 +24,6 @@ class Execution extends MultiIOModule {
     ALUOps.SRA  -> ((op1.asSInt >> op2(4, 0)).asUInt),
     ALUOps.SRL  -> (op1 >> op2(4, 0)),
     ALUOps.SLL  -> (op1 << op2(4, 0)),
-    ALUOps.COPY_A-> (op1),
-    ALUOps.COPY_B-> (op2),
     ALUOps.DC   -> (0.U)
   )
 
@@ -43,10 +41,11 @@ class Execution extends MultiIOModule {
 
   io.out.controlSignals := io.in.controlSignals
   io.out.BranchOut := MuxLookup(io.in.BranchType, 0.U(1.W), BranchMap)
+  //io.out.ALUOut := Mux(io.in.controlSignals.jump, op1 + 4.U, MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap))
   io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
 
   io.out.rd2 := io.in.rd2
   io.out.RegDest := io.in.RegDest
-  io.out.NewPC := Mux(io.in.convenient.jump, io.in.pc + io.in.Imm, io.in.pc)
-  // io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (io.in.pc + io.in.Imm.) & "hfffffffe".U, io.in.pc + io.in.Imm)
+  // io.out.NewPC := op1 + op2
+  io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (io.in.pc + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
 }
