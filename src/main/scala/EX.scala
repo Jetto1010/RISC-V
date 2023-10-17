@@ -19,19 +19,21 @@ class Execution extends MultiIOModule {
     ALUOps.AND  -> (op1 & op2),
     ALUOps.OR   -> (op1 | op2),
     ALUOps.XOR  -> (op1 ^ op2),
-    ALUOps.SLT  -> (op1.asSInt() < op2.asSInt()),
+    ALUOps.SLT  -> (op1.asSInt < op2.asSInt),
     ALUOps.SLTU -> (op1 <  op2),
-    ALUOps.SRA  -> ((op1.asSInt() >> op2(4, 0)).asUInt()),
+    ALUOps.SRA  -> ((op1.asSInt >> op2(4, 0)).asUInt),
     ALUOps.SRL  -> (op1 >> op2(4, 0)),
     ALUOps.SLL  -> (op1 << op2(4, 0)),
+    ALUOps.COPY_A-> (op1),
+    ALUOps.COPY_B-> (op2),
     ALUOps.DC   -> (0.U)
   )
 
   val BranchMap = Array(
     branchType.beq  -> (op1 === op2),
     branchType.neq  -> (op1 =/= op2),
-    branchType.gte  -> (op1.asSInt() >= op2.asSInt()),
-    branchType.lt   -> (op1.asSInt() < op2.asSInt()),
+    branchType.gte  -> (op1.asSInt >= op2.asSInt),
+    branchType.lt   -> (op1.asSInt < op2.asSInt),
     branchType.gteu -> (op1 >= op2),
     branchType.ltu  -> (op1 <  op2),
     branchType.jal  -> (Bool(true)),
@@ -45,5 +47,6 @@ class Execution extends MultiIOModule {
 
   io.out.rd2 := io.in.rd2
   io.out.RegDest := io.in.RegDest
-  io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (io.in.pc + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
+  io.out.NewPC := Mux(io.in.convenient.jump, io.in.pc + io.in.Imm, io.in.pc)
+  // io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (io.in.pc + io.in.Imm.) & "hfffffffe".U, io.in.pc + io.in.Imm)
 }

@@ -50,5 +50,5 @@ class MemoryFetch() extends MultiIOModule {
   io.out.RegDest := io.in.RegDest
 
   io.outIF.NewPC := io.in.NewPC
-  io.outIF.PCSel := (io.in.controlSignals.branch && io.in.BranchOut) || io.in.controlSignals.jump
+  io.outIF.PCSel := ((io.in.controlSignals.branch && io.in.BranchOut) || io.in.controlSignals.jump)
 }
