@@ -27,7 +27,7 @@ object Manifest {
     printIfSuccessful  = true,
     printErrors        = true,
     printParsedProgram = false,
-    printVMtrace       = false,
+    printVMtrace       = true,
     printVMfinal       = false,
     printMergedTrace   = false,
     printBinary        = false,
@@ -129,13 +129,16 @@ class AllTestsWindows extends FlatSpec with Matchers {
 
 class Group extends FlatSpec with Matchers {
   val group = Array(
-    "arith.s",
-    "addi.s",
-    "arithImm.s",
-    "forward1.s",
-    "forward2.s",
-    "load.s",
-    "load2.s",
+    "add.s",
+    "BTreeManyO3.s",
+    "BTreeO3.s",
+    "constants.s",
+    "memoFib.s",
+    "naiveFib.s",
+    "palindrome.s",
+    "palindromeO3.s",
+    "searchRegularO0.s",
+    "square.s",
   )
   it should "just werk" in {
     val werks = group.filterNot(_ == "convolution.s").map{testname => 
