@@ -75,15 +75,15 @@ class Decoder() extends Module {
     LUI    -> List(Y,        N,       N,        N,        N,    branchType.DC,   Op1Select.DC,  imm,       UTYPE,        ALUOps.ADD),
     AUIPC  -> List(Y,        N,       N,        N,        N,    branchType.DC,   PC,            imm,       UTYPE,        ALUOps.ADD),
 
-    JAL    -> List(Y,        N,       N,        N,        Y,    branchType.jal , PC,            Op2Select.DC, JTYPE,     ALUOps.DC),
-    JALR   -> List(Y,        N,       N,        N,        Y,    branchType.jalr, PC,            Op2Select.DC, ITYPE,     ALUOps.DC),
+    JAL    -> List(Y,        N,       N,        N,        Y,    branchType.jal , PC,            imm,       JTYPE,        ALUOps.ADD),
+    JALR   -> List(Y,        N,       N,        N,        Y,    branchType.jalr, rs1,           imm,       ITYPE,        ALUOps.ADD),
 
-    BEQ    -> List(N,        N,       N,        Y,        N,    branchType.beq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
-    BNE    -> List(N,        N,       N,        Y,        N,    branchType.neq,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
-    BLT    -> List(N,        N,       N,        Y,        N,    branchType.lt,   Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
-    BGE    -> List(N,        N,       N,        Y,        N,    branchType.gte,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
-    BLTU   -> List(N,        N,       N,        Y,        N,    branchType.ltu,  Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
-    BGEU   -> List(N,        N,       N,        Y,        N,    branchType.gteu, Op1Select.DC,  Op2Select.DC, BTYPE,     ALUOps.ADD),
+    BEQ    -> List(N,        N,       N,        Y,        N,    branchType.beq,  rs1,           rs2,       BTYPE,        ALUOps.DC),
+    BNE    -> List(N,        N,       N,        Y,        N,    branchType.neq,  rs1,           rs2,       BTYPE,        ALUOps.DC),
+    BLT    -> List(N,        N,       N,        Y,        N,    branchType.lt,   rs1,           rs2,       BTYPE,        ALUOps.DC),
+    BGE    -> List(N,        N,       N,        Y,        N,    branchType.gte,  rs1,           rs2,       BTYPE,        ALUOps.DC),
+    BLTU   -> List(N,        N,       N,        Y,        N,    branchType.ltu,  rs1,           rs2,       BTYPE,        ALUOps.DC),
+    BGEU   -> List(N,        N,       N,        Y,        N,    branchType.gteu, rs1,           rs2,       BTYPE,        ALUOps.DC),
     )
 
 

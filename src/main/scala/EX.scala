@@ -13,6 +13,7 @@ class Execution extends MultiIOModule {
 
   val op1 = io.in.Op1Select
   val op2 = io.in.Op2Select
+
   val ALUopMap = Array(
     ALUOps.ADD  -> (op1 + op2),
     ALUOps.SUB  -> (op1 - op2),
@@ -31,7 +32,7 @@ class Execution extends MultiIOModule {
     branchType.beq  -> (op1 === op2),
     branchType.neq  -> (op1 =/= op2),
     branchType.gte  -> (op1.asSInt >= op2.asSInt),
-    branchType.lt   -> (op1.asSInt < op2.asSInt),
+    branchType.lt   -> (op1.asSInt <  op2.asSInt),
     branchType.gteu -> (op1 >= op2),
     branchType.ltu  -> (op1 <  op2),
     branchType.jal  -> (Bool(true)),
@@ -40,12 +41,10 @@ class Execution extends MultiIOModule {
   )
 
   io.out.controlSignals := io.in.controlSignals
-  io.out.BranchOut := MuxLookup(io.in.BranchType, 0.U(1.W), BranchMap)
-  //io.out.ALUOut := Mux(io.in.controlSignals.jump, op1 + 4.U, MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap))
-  io.out.ALUOut := MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap)
+  io.out.BranchOut := MuxLookup(io.in.BranchType, Bool(false), BranchMap)
+  io.out.ALUOut := Mux(io.in.controlSignals.jump, op1, MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap))
 
   io.out.rd2 := io.in.rd2
   io.out.RegDest := io.in.RegDest
-  // io.out.NewPC := op1 + op2
-  io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (io.in.pc + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
+  io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (op1 + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
 }

@@ -46,7 +46,8 @@ class InstructionDecode extends MultiIOModule {
   registers.io.writeAddress := io.wbin.RegDest
   registers.io.writeData    := io.wbin.Result
 
-  val imm = MuxLookup(decoder.immType, 0.S(32.W), Array(
+  decoder.instruction := io.in.instruction
+  val Imm = MuxLookup(decoder.immType, 0.S(32.W), Array(
     ImmFormat.ITYPE -> decoder.instruction.immediateIType,
     ImmFormat.STYPE -> decoder.instruction.immediateSType,
     ImmFormat.BTYPE -> decoder.instruction.immediateBType,
@@ -55,24 +56,23 @@ class InstructionDecode extends MultiIOModule {
     ImmFormat.DC    -> 0.S(32.W)
   )).asUInt
 
-  decoder.instruction := io.in.instruction
   io.out.pc := io.in.pc
   io.out.controlSignals := decoder.controlSignals
   io.out.BranchType := decoder.branchType
   io.out.Op1Select := MuxLookup(decoder.op1Select, 0.U, Array(
     Op1Select.rs1 -> registers.io.readData1,
-    Op1Select.PC  -> io.in.pc,
+    Op1Select.PC  -> (io.in.pc + 4.U),
     Op1Select.DC  -> 0.U,
   ))
   io.out.Op2Select := MuxLookup(decoder.op2Select, 0.U, Array(
     Op2Select.rs2 -> registers.io.readData2,
-    Op2Select.imm -> imm,
+    Op2Select.imm  -> Imm,
     Op2Select.DC  -> 0.U,
   ))
   io.out.ALUop := decoder.ALUop
   io.out.rd2 := registers.io.readData2
   io.out.RegDest := decoder.instruction.registerRd
-  io.out.Imm := imm
+  io.out.Imm := Imm
 }
 
 
