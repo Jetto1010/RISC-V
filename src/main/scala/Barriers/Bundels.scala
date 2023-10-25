@@ -16,6 +16,7 @@ class IDEXBundle extends Bundle {
   val rd2 = UInt(32.W)
   val RegDest = UInt(5.W)
   val Imm = UInt(32.W)
+  val rd1 = UInt(32.W)
 }
 
 class EXMEMBundle extends Bundle {

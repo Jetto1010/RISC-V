@@ -27,9 +27,9 @@ object Manifest {
     printIfSuccessful  = true,
     printErrors        = true,
     printParsedProgram = false,
-    printVMtrace       = true,
+    printVMtrace       = false,
     printVMfinal       = false,
-    printMergedTrace   = false,
+    printMergedTrace   = true,
     printBinary        = false,
     nopPadded          = nopPadded,
     breakPoints        = Nil, // not implemented

@@ -73,6 +73,7 @@ class InstructionDecode extends MultiIOModule {
   io.out.rd2 := registers.io.readData2
   io.out.RegDest := decoder.instruction.registerRd
   io.out.Imm := Imm
+  io.out.rd1 := registers.io.readData1
 }
 
 
