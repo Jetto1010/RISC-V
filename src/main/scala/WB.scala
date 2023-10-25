@@ -12,10 +12,9 @@ class WriteBack extends Module {
 
   io.out.RegWrite := io.in.controlSignals.regWrite
   io.out.RegDest := io.in.RegDest
-  val Result = Mux(io.in.controlSignals.memRead, io.in.dataMEM, io.in.ALUOut)
-  io.out.Result := Result
+  io.out.Result := Mux(io.in.controlSignals.memRead, io.in.dataMEM, io.in.ALUOut)
 
-  io.outEX.RegVal := Result
+  io.outEX.RegVal := io.out.Result
   io.outEX.RegDest := io.in.RegDest
   io.outEX.RegWrite := io.in.controlSignals.regWrite
 }

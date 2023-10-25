@@ -17,20 +17,28 @@ class Execution extends MultiIOModule {
   val op1 = Wire(UInt(32.W))
   val op2 = Wire(UInt(32.W))
 
-  when(io.memIn.RegWrite && io.memIn.RegDest =/= 0.U && io.memIn.RegDest === io.in.rd1) {
+  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.rd1) {
     op1 := io.memIn.RegVal
-  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest =/= 0.U && io.wbIn.RegDest === io.in.rd1 && io.memIn.RegDest =/= io.in.rd1) {
+  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.rd1 && io.memIn.RegDest =/= io.in.rd1) {
     op1 := io.wbIn.RegVal
   }.otherwise {
-    op1 := io.in.Op1Select
+    op1 := MuxLookup(io.in.Op1Select, 0.U, Array(
+      Op1Select.rs1 -> io.in.rd1,
+      Op1Select.PC  -> (io.in.pc + 4.U),
+      Op1Select.DC  -> 0.U,
+    ))
   }
 
-  when(io.memIn.RegWrite && io.memIn.RegDest =/= 0.U && io.memIn.RegDest === io.in.rd2) {
+  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.rd2) {
     op2 := io.memIn.RegVal
-  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest =/= 0.U && io.wbIn.RegDest === io.in.rd2 && io.memIn.RegDest =/= io.in.rd2) {
+  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.rd2 && io.memIn.RegDest =/= io.in.rd2) {
     op2 := io.wbIn.RegVal
   }.otherwise {
-    op2 := io.in.Op1Select
+    op2 := MuxLookup(io.in.Op2Select, 0.U, Array(
+      Op2Select.rs2 -> io.in.rd2,
+      Op2Select.imm -> io.in.Imm,
+      Op2Select.DC  -> 0.U,
+    ))
   }
 
   val ALUopMap = Array(
