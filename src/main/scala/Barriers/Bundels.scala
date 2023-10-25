@@ -44,3 +44,15 @@ class WBIDBundle extends Bundle {
   val Result = UInt(32.W)
   val RegDest = UInt(5.W)
 }
+
+class MEMEXBundle extends Bundle {
+  val RegVal = UInt(32.W)
+  val RegDest = UInt(5.W)
+  val RegWrite = Bool()
+}
+
+class WBEXBundle extends Bundle {
+  val RegVal = UInt(32.W)
+  val RegDest = UInt(5.W)
+  val RegWrite = Bool()
+}

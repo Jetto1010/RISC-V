@@ -64,4 +64,8 @@ class CPU extends MultiIOModule {
   WB.io.in    <> MEMWB.io.out
   ID.io.wbin  <> WB.io.out
   IF.io.in    <> MEM.io.outIF
+
+  // Forward 
+  EX.io.memIn <> MEM.io.outEX
+  EX.io.wbIn <> WB.io.outEX
 }

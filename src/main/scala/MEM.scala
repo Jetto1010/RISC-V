@@ -21,6 +21,7 @@ class MemoryFetch() extends MultiIOModule {
       val in = Input(new EXMEMBundle)
       val out = Output(new MEMWBBundle)
       val outIF = Output(new MEMIFBundle)
+      val outEX = Output(new MEMEXBundle)
     }
   )
 
@@ -51,4 +52,8 @@ class MemoryFetch() extends MultiIOModule {
 
   io.outIF.NewPC := io.in.NewPC
   io.outIF.PCSel := ((io.in.controlSignals.branch && io.in.BranchOut) || io.in.controlSignals.jump)
+
+  io.outEX.RegVal := io.in.ALUOut
+  io.outEX.RegDest := io.in.RegDest
+  io.outEX.RegWrite := io.in.controlSignals.regWrite
 }

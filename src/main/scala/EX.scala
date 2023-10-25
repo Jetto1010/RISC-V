@@ -8,11 +8,42 @@ class Execution extends MultiIOModule {
     new Bundle {
       val in = Input(new IDEXBundle)
       val out = Output(new EXMEMBundle)
+
+      val memIn = Input(new MEMEXBundle)
+      val wbIn = Input(new WBEXBundle)
     }
   )
 
-  val op1 = io.in.Op1Select
-  val op2 = io.in.Op2Select
+  val op1 = Wire(UInt(32.W))
+  val op2 = Wire(UInt(32.W))
+  
+  // From MEM
+  when(io.memIn.RegWrite && io.memIn.RegDest =/= 0.U) {
+    when(io.memIn.RegDest === io.in.Op1Select) {
+      op1 := io.memIn.RegVal
+    }
+    when(io.memIn.RegDest === io.in.Op2Select) {
+      op2 := io.memIn.RegVal
+    }
+  }
+  
+  // From WB
+  when(io.wbIn.RegWrite && io.wbIn.RegDest =/= 0.U) {
+    when(io.wbIn.RegDest === io.in.Op1Select && io.memIn.RegDest =/= io.in.Op1Select) {
+      op1 := io.wbIn.RegVal
+    }
+    when(io.wbIn.RegDest === io.in.Op2Select && io.memIn.RegDest =/= io.in.Op2Select) {
+      op2 := io.wbIn.RegVal
+    }
+  }
+
+  // From ID
+  when(op1 =/= io.memIn.RegVal && op1 =/= io.wbIn.RegVal) {
+    op1 := io.in.Op1Select
+  }
+  when(op2 =/= io.memIn.RegVal && op2 =/= io.wbIn.RegVal) {
+    op2 := io.in.Op2Select
+  }
 
   val ALUopMap = Array(
     ALUOps.ADD  -> (op1 + op2),

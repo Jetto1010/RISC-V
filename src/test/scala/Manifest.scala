@@ -19,9 +19,9 @@ import LogParser._
 
 object Manifest {
 
-  val singleTest = "BTreeO3.s"
+  val singleTest = "forward1.s"
 
-  val nopPadded = true
+  val nopPadded = false
 
   val singleTestOptions = TestOptions(
     printIfSuccessful  = true,
@@ -127,36 +127,3 @@ class AllTestsWindows extends FlatSpec with Matchers {
 }
 
 
-class Group extends FlatSpec with Matchers {
-  val group = Array(
-    "add.s",
-    "BTreeManyO3.s",
-    "BTreeO3.s",
-    "constants.s",
-    "memoFib.s",
-    "naiveFib.s",
-    "palindrome.s",
-    "palindromeO3.s",
-    "searchRegularO0.s",
-    "square.s",
-  )
-  it should "just werk" in {
-    val werks = group.filterNot(_ == "convolution.s").map{testname => 
-      say(s"testing $testname")
-      val opts = Manifest.allTestOptions(testname)
-      (testname, TestRunner.run(opts))
-    }
-    if(werks.foldLeft(true)(_ && _._2))
-      say(Console.GREEN + "All tests successful!" + Console.RESET)
-    else {
-      val success = werks.map(x => if(x._2) 1 else 0).sum
-      val total   = werks.size
-      say(s"$success/$total tests successful")
-      werks.foreach{ case(name, success) =>
-        val msg = if(success) Console.GREEN + s"$name successful" + Console.RESET
-        else Console.RED + s"$name failed" + Console.RESET
-        say(msg)
-      }
-    }
-  }
-}
