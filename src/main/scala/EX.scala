@@ -14,32 +14,38 @@ class Execution extends MultiIOModule {
     }
   )
 
+  val opForward1 = Wire(UInt(32.W))
+  val opForward2 = Wire(UInt(32.W))
   val op1 = Wire(UInt(32.W))
   val op2 = Wire(UInt(32.W))
 
-  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.rd1) {
-    op1 := io.memIn.RegVal
-  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.rd1 && io.memIn.RegDest =/= io.in.rd1) {
-    op1 := io.wbIn.RegVal
+  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.RegAddr1) {
+    opForward1 := io.memIn.RegVal
+  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.RegAddr1 && io.memIn.RegDest =/= io.in.RegAddr1) {
+    opForward1 := io.wbIn.RegVal
   }.otherwise {
-    op1 := MuxLookup(io.in.Op1Select, 0.U, Array(
-      Op1Select.rs1 -> io.in.rd1,
-      Op1Select.PC  -> (io.in.pc + 4.U),
-      Op1Select.DC  -> 0.U,
-    ))
+    opForward1 := io.in.RegVal1
   }
 
-  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.rd2) {
-    op2 := io.memIn.RegVal
-  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.rd2 && io.memIn.RegDest =/= io.in.rd2) {
-    op2 := io.wbIn.RegVal
+  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.RegAddr2) {
+    opForward2 := io.memIn.RegVal
+  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.RegAddr2 && io.memIn.RegDest =/= io.in.RegAddr2) {
+    opForward2 := io.wbIn.RegVal
   }.otherwise {
-    op2 := MuxLookup(io.in.Op2Select, 0.U, Array(
-      Op2Select.rs2 -> io.in.rd2,
-      Op2Select.imm -> io.in.Imm,
-      Op2Select.DC  -> 0.U,
-    ))
+    opForward2 := io.in.RegVal2
   }
+
+  op1 := MuxLookup(io.in.Op1Select, 0.U, Array(
+    Op1Select.rs1 -> opForward1,
+    Op1Select.PC  -> (io.in.pc + 4.U),
+    Op1Select.DC  -> 0.U,
+  ))
+
+  op2 := MuxLookup(io.in.Op2Select, 0.U, Array(
+    Op2Select.rs2 -> opForward2,
+    Op2Select.imm -> io.in.Imm,
+    Op2Select.DC  -> 0.U,
+  ))
 
   val ALUopMap = Array(
     ALUOps.ADD  -> (op1 + op2),
@@ -71,7 +77,7 @@ class Execution extends MultiIOModule {
   io.out.BranchOut := MuxLookup(io.in.BranchType, Bool(false), BranchMap)
   io.out.ALUOut := Mux(io.in.controlSignals.jump, op1, MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap))
 
-  io.out.rd2 := io.in.rd2
+  io.out.RegVal := io.in.RegVal2
   io.out.RegDest := io.in.RegDest
   io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (op1 + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
 }

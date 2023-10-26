@@ -15,15 +15,17 @@ class IDEXBundle extends Bundle {
   val ALUop = UInt(4.W)
   val RegDest = UInt(5.W)
   val Imm = UInt(32.W)
-  val rd1 = UInt(32.W)
-  val rd2 = UInt(32.W)
+  val RegVal1 = UInt(32.W)
+  val RegVal2 = UInt(32.W)
+  val RegAddr1 = UInt(5.W)
+  val RegAddr2 = UInt(5.W)
 }
 
 class EXMEMBundle extends Bundle {
   val controlSignals = new ControlSignals
   val BranchOut = Bool()
   val ALUOut = UInt(32.W)
-  val rd2 = UInt(32.W)
+  val RegVal = UInt(32.W)
   val RegDest = UInt(5.W)
   val NewPC = UInt(32.W)
 }

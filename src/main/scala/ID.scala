@@ -64,8 +64,10 @@ class InstructionDecode extends MultiIOModule {
   io.out.ALUop := decoder.ALUop
   io.out.RegDest := decoder.instruction.registerRd
   io.out.Imm := Imm
-  io.out.rd1 := Mux(io.wbin.RegDest === io.in.instruction.registerRs1, io.wbin.Result, registers.io.readData1)
-  io.out.rd2 := Mux(io.wbin.RegDest === io.in.instruction.registerRs2, io.wbin.Result, registers.io.readData2)
+  io.out.RegVal1 := Mux(io.wbin.RegDest === io.in.instruction.registerRs1, io.wbin.Result, registers.io.readData1)
+  io.out.RegVal2 := Mux(io.wbin.RegDest === io.in.instruction.registerRs2, io.wbin.Result, registers.io.readData2)
+  io.out.RegAddr1 := io.in.instruction.registerRs1
+  io.out.RegAddr2 := io.in.instruction.registerRs2
 }
 
 
