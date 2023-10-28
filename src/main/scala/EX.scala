@@ -18,7 +18,7 @@ class Execution extends MultiIOModule {
   val opForward2 = Wire(UInt(32.W))
   val op1 = Wire(UInt(32.W))
   val op2 = Wire(UInt(32.W))
-
+    
   when(io.memIn.RegWrite && io.memIn.RegDest === io.in.RegAddr1) {
     opForward1 := io.memIn.RegVal
   }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.RegAddr1 && io.memIn.RegDest =/= io.in.RegAddr1) {

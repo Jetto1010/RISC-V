@@ -22,12 +22,15 @@ class InstructionDecode extends MultiIOModule {
       val wbin = Input(new WBIDBundle)
 
       val out = Output(new IDEXBundle)
+      val stall = Output(Bool())
     }
   )
 
   val registers = Module(new Registers)
   val decoder   = Module(new Decoder).io
 
+  val PreviousMemRead = RegInit(Bool(), Bool(false))
+  val PreviousRegDest = RegInit(UInt(5.W), 0.U)
 
   /**RegDest
     * Setup. You should not change this code
@@ -56,18 +59,33 @@ class InstructionDecode extends MultiIOModule {
     ImmFormat.DC    -> 0.S(32.W)
   )).asUInt
 
+  io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
   io.out.pc := io.in.pc
-  io.out.controlSignals := decoder.controlSignals
+  
   io.out.BranchType := decoder.branchType
-  io.out.Op1Select := decoder.op1Select
-  io.out.Op2Select := decoder.op2Select
   io.out.ALUop := decoder.ALUop
-  io.out.RegDest := decoder.instruction.registerRd
   io.out.Imm := Imm
   io.out.RegVal1 := Mux(io.wbin.RegDest === io.in.instruction.registerRs1, io.wbin.Result, registers.io.readData1)
   io.out.RegVal2 := Mux(io.wbin.RegDest === io.in.instruction.registerRs2, io.wbin.Result, registers.io.readData2)
-  io.out.RegAddr1 := io.in.instruction.registerRs1
-  io.out.RegAddr2 := io.in.instruction.registerRs2
+  
+  PreviousMemRead := io.out.controlSignals.memRead
+  PreviousRegDest := io.out.RegDest
+
+  when(io.stall) {
+    io.out.Op1Select := 0.U
+    io.out.Op2Select := 0.U
+    io.out.RegAddr1 := 0.U
+    io.out.RegAddr2 := 0.U
+    io.out.controlSignals := ControlSignals.nop
+    io.out.RegDest := 0.U
+  }.otherwise{
+    io.out.Op1Select := decoder.op1Select
+    io.out.Op2Select := decoder.op2Select
+    io.out.RegAddr1 := io.in.instruction.registerRs1
+    io.out.RegAddr2 := io.in.instruction.registerRs2
+    io.out.controlSignals := decoder.controlSignals
+    io.out.RegDest := decoder.instruction.registerRd
+  }
 }
 
 

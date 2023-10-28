@@ -54,7 +54,7 @@ class CPU extends MultiIOModule {
   /**
     TODO: Your code here
     */
-  IF.io.stall := Bool(false)
+  IF.io.stall := ID.io.stall
   IFID.io.in  <> IF.io.out
   ID.io.in    <> IFID.io.out
   IDEX.io.in  <> ID.io.out
@@ -68,5 +68,5 @@ class CPU extends MultiIOModule {
 
   // Forward 
   EX.io.memIn <> MEM.io.outEX
-  EX.io.wbIn <> WB.io.outEX
+  EX.io.wbIn  <> WB.io.outEX
 }
