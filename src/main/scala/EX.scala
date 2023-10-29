@@ -9,8 +9,8 @@ class Execution extends MultiIOModule {
       val in = Input(new IDEXBundle)
       val out = Output(new EXMEMBundle)
 
-      val memIn = Input(new MEMEXBundle)
-      val wbIn = Input(new WBEXBundle)
+      val memIn = Input(new EXBundle)
+      val wbIn = Input(new EXBundle)
     }
   )
 

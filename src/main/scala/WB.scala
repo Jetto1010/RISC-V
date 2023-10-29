@@ -6,7 +6,7 @@ class WriteBack extends Module {
     new Bundle {
       val in = Input(new MEMWBBundle)
       val out = Output(new WBIDBundle)
-      val outEX = Output(new WBEXBundle)
+      val outEX = Output(new EXBundle)
     }
   )
 

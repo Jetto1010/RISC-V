@@ -12,6 +12,7 @@ class IFID extends Module {
   val delay = RegInit(0.U(32.W))
   delay := io.in.pc
   io.out.pc := delay
+  
   io.out.instruction := io.in.instruction
 }
 

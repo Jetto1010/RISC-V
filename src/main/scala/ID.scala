@@ -50,7 +50,7 @@ class InstructionDecode extends MultiIOModule {
   registers.io.writeData    := io.wbin.Result
 
   decoder.instruction := io.in.instruction
-  val Imm = MuxLookup(decoder.immType, 0.S(32.W), Array(
+  io.out.Imm :=  MuxLookup(decoder.immType, 0.S(32.W), Array(
     ImmFormat.ITYPE -> decoder.instruction.immediateIType,
     ImmFormat.STYPE -> decoder.instruction.immediateSType,
     ImmFormat.BTYPE -> decoder.instruction.immediateBType,
@@ -59,31 +59,30 @@ class InstructionDecode extends MultiIOModule {
     ImmFormat.DC    -> 0.S(32.W)
   )).asUInt
 
-  io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
   io.out.pc := io.in.pc
-  
-  io.out.BranchType := decoder.branchType
-  io.out.ALUop := decoder.ALUop
-  io.out.Imm := Imm
+  io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
   io.out.RegVal1 := Mux(io.wbin.RegDest === io.in.instruction.registerRs1, io.wbin.Result, registers.io.readData1)
   io.out.RegVal2 := Mux(io.wbin.RegDest === io.in.instruction.registerRs2, io.wbin.Result, registers.io.readData2)
-  
   PreviousMemRead := io.out.controlSignals.memRead
   PreviousRegDest := io.out.RegDest
 
   when(io.stall) {
-    io.out.Op1Select := 0.U
-    io.out.Op2Select := 0.U
+    io.out.controlSignals := ControlSignals.nop
+    io.out.BranchType := branchType.DC
+    io.out.Op1Select := Op1Select.DC
+    io.out.Op2Select := Op2Select.DC
+    io.out.ALUop := ALUOps.DC
     io.out.RegAddr1 := 0.U
     io.out.RegAddr2 := 0.U
-    io.out.controlSignals := ControlSignals.nop
     io.out.RegDest := 0.U
   }.otherwise{
+    io.out.controlSignals := decoder.controlSignals
+    io.out.BranchType := decoder.branchType
     io.out.Op1Select := decoder.op1Select
     io.out.Op2Select := decoder.op2Select
+    io.out.ALUop := decoder.ALUop
     io.out.RegAddr1 := io.in.instruction.registerRs1
     io.out.RegAddr2 := io.in.instruction.registerRs2
-    io.out.controlSignals := decoder.controlSignals
     io.out.RegDest := decoder.instruction.registerRd
   }
 }

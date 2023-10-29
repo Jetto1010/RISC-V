@@ -13,12 +13,12 @@ class IDEXBundle extends Bundle {
   val Op1Select = UInt(1.W)
   val Op2Select = UInt(1.W)
   val ALUop = UInt(4.W)
-  val RegDest = UInt(5.W)
   val Imm = UInt(32.W)
   val RegVal1 = UInt(32.W)
   val RegVal2 = UInt(32.W)
   val RegAddr1 = UInt(5.W)
   val RegAddr2 = UInt(5.W)
+  val RegDest = UInt(5.W)
 }
 
 class EXMEMBundle extends Bundle {
@@ -48,14 +48,7 @@ class WBIDBundle extends Bundle {
   val RegDest = UInt(5.W)
 }
 
-class MEMEXBundle extends Bundle {
-  val RegVal = UInt(32.W)
-  val RegDest = UInt(5.W)
-  val RegWrite = Bool()
-  val MemRead = Bool()
-}
-
-class WBEXBundle extends Bundle {
+class EXBundle extends Bundle {
   val RegVal = UInt(32.W)
   val RegDest = UInt(5.W)
   val RegWrite = Bool()
