@@ -54,7 +54,6 @@ class CPU extends MultiIOModule {
   /**
     TODO: Your code here
     */
-  IF.io.stall := ID.io.stall
   IFID.io.in  <> IF.io.out
   ID.io.in    <> IFID.io.out
   IDEX.io.in  <> ID.io.out
@@ -69,4 +68,11 @@ class CPU extends MultiIOModule {
   // Forward 
   EX.io.memIn <> MEM.io.outEX
   EX.io.wbIn  <> WB.io.outEX
+
+  // Stall and squash
+  val squash = RegInit(Bool(), Bool(false))
+  IF.io.stall   := ID.io.stall
+  IDEX.io.stall := ID.io.stall || EX.io.out.BranchOut || squash 
+  IF.io.squash  := EX.io.out.BranchOut
+  squash := EX.io.out.BranchOut
 }

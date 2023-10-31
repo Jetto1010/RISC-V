@@ -21,11 +21,18 @@ class IDEX extends Module {
     new Bundle {
       val in = Input(new IDEXBundle)
       val out = Output(new IDEXBundle)
+      val stall = Input(Bool())
     }
   )
 
   val delay = Reg(new IDEXBundle)
-  delay := io.in
+  when(io.stall){
+    delay := 0.U.asTypeOf(new IDEXBundle)
+    delay.pc := io.in.pc
+    delay.Imm := io.in.Imm
+  }.otherwise{
+    delay := io.in
+  }
   io.out := delay
 }
 

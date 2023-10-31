@@ -24,6 +24,8 @@ class InstructionFetch extends MultiIOModule {
     new Bundle {
       val in = Input(new MEMIFBundle)
       val stall = Input(Bool())
+      val squash = Input(Bool())
+
       val out = Output(new IFIDBundle)
     })
 
@@ -48,7 +50,7 @@ class InstructionFetch extends MultiIOModule {
   IMEM.io.instructionAddress := Mux(io.stall, Old, PC)
   val instruction = Wire(new Instruction)
   instruction := IMEM.io.instruction.asTypeOf(new Instruction)
-  io.out.instruction := instruction
+  io.out.instruction := Mux(io.squash, Instruction.NOP, instruction)
   
   PC := Mux(io.in.PCSel, io.in.NewPC, PC + Mux(io.stall, 0.U, 4.U))
   Old := PC

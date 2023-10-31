@@ -7,10 +7,10 @@ class Execution extends MultiIOModule {
   val io = IO(
     new Bundle {
       val in = Input(new IDEXBundle)
-      val out = Output(new EXMEMBundle)
-
       val memIn = Input(new EXBundle)
       val wbIn = Input(new EXBundle)
+
+      val out = Output(new EXMEMBundle)
     }
   )
 
@@ -74,7 +74,7 @@ class Execution extends MultiIOModule {
   )
 
   io.out.controlSignals := io.in.controlSignals
-  io.out.BranchOut := MuxLookup(io.in.BranchType, Bool(false), BranchMap)
+  io.out.BranchOut := (MuxLookup(io.in.BranchType, Bool(false), BranchMap) && io.in.controlSignals.branch) || io.in.controlSignals.jump
   io.out.ALUOut := Mux(io.in.controlSignals.jump, op1, MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap))
 
   io.out.RegVal := opForward2

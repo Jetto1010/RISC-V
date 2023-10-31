@@ -20,7 +20,7 @@ class InstructionDecode extends MultiIOModule {
     new Bundle {
       val in = Input(new IFIDBundle)
       val wbin = Input(new WBIDBundle)
-
+      
       val out = Output(new IDEXBundle)
       val stall = Output(Bool())
     }
@@ -58,33 +58,22 @@ class InstructionDecode extends MultiIOModule {
     ImmFormat.JTYPE -> decoder.instruction.immediateJType,
     ImmFormat.DC    -> 0.S(32.W)
   )).asUInt
-
+  
   io.out.pc := io.in.pc
-  io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
+  io.out.controlSignals := decoder.controlSignals
+  io.out.BranchType := decoder.branchType
+  io.out.Op1Select := decoder.op1Select
+  io.out.Op2Select := decoder.op2Select
+  io.out.ALUop := decoder.ALUop
+  io.out.RegAddr1 := io.in.instruction.registerRs1
+  io.out.RegAddr2 := io.in.instruction.registerRs2
   io.out.RegVal1 := Mux(io.wbin.RegDest === io.in.instruction.registerRs1 && io.wbin.RegWrite, io.wbin.Result, registers.io.readData1)
   io.out.RegVal2 := Mux(io.wbin.RegDest === io.in.instruction.registerRs2 && io.wbin.RegWrite, io.wbin.Result, registers.io.readData2)
+  io.out.RegDest := decoder.instruction.registerRd
+  
+  io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
   PreviousMemRead := io.out.controlSignals.memRead
   PreviousRegDest := io.out.RegDest
-
-  when(io.stall) {
-    io.out.controlSignals := ControlSignals.nop
-    io.out.BranchType := branchType.DC
-    io.out.Op1Select := Op1Select.DC
-    io.out.Op2Select := Op2Select.DC
-    io.out.ALUop := ALUOps.DC
-    io.out.RegAddr1 := 0.U
-    io.out.RegAddr2 := 0.U
-    io.out.RegDest := 0.U
-  }.otherwise{
-    io.out.controlSignals := decoder.controlSignals
-    io.out.BranchType := decoder.branchType
-    io.out.Op1Select := decoder.op1Select
-    io.out.Op2Select := decoder.op2Select
-    io.out.ALUop := decoder.ALUop
-    io.out.RegAddr1 := io.in.instruction.registerRs1
-    io.out.RegAddr2 := io.in.instruction.registerRs2
-    io.out.RegDest := decoder.instruction.registerRd
-  }
 }
 
 
