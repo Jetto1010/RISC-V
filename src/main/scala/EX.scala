@@ -77,7 +77,7 @@ class Execution extends MultiIOModule {
   io.out.BranchOut := MuxLookup(io.in.BranchType, Bool(false), BranchMap)
   io.out.ALUOut := Mux(io.in.controlSignals.jump, op1, MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap))
 
-  io.out.RegVal := io.in.RegVal2
+  io.out.RegVal := opForward2
   io.out.RegDest := io.in.RegDest
   io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (op1 + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
 }

@@ -29,6 +29,7 @@ class InstructionFetch extends MultiIOModule {
 
   val IMEM = Module(new IMEM)
   val PC   = RegInit(UInt(32.W), 0.U)
+  val Old  = RegInit(UInt(32.W), 0.U)
 
   /**
     * Setup. You should not change this code
@@ -44,13 +45,13 @@ class InstructionFetch extends MultiIOModule {
     */
   io.out.pc := PC
 
-  IMEM.io.instructionAddress := PC
+  IMEM.io.instructionAddress := Mux(io.stall, Old, PC)
   val instruction = Wire(new Instruction)
   instruction := IMEM.io.instruction.asTypeOf(new Instruction)
   io.out.instruction := instruction
   
   PC := Mux(io.in.PCSel, io.in.NewPC, PC + Mux(io.stall, 0.U, 4.U))
-
+  Old := PC
 
   /**
     * Setup. You should not change this code.
