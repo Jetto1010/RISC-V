@@ -19,17 +19,17 @@ class Execution extends MultiIOModule {
   val op1 = Wire(UInt(32.W))
   val op2 = Wire(UInt(32.W))
     
-  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.RegAddr1) {
+  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.RegAddr1 && io.memIn.RegDest =/= 0.U) {
     opForward1 := io.memIn.RegVal
-  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.RegAddr1 && io.memIn.RegDest =/= io.in.RegAddr1) {
+  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.RegAddr1 && io.memIn.RegDest =/= io.in.RegAddr1 && io.wbIn.RegDest =/= 0.U) {
     opForward1 := io.wbIn.RegVal
   }.otherwise {
     opForward1 := io.in.RegVal1
   }
 
-  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.RegAddr2) {
+  when(io.memIn.RegWrite && io.memIn.RegDest === io.in.RegAddr2 && io.memIn.RegDest =/= 0.U) {
     opForward2 := io.memIn.RegVal
-  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.RegAddr2 && io.memIn.RegDest =/= io.in.RegAddr2) {
+  }.elsewhen(io.wbIn.RegWrite && io.wbIn.RegDest === io.in.RegAddr2 && io.memIn.RegDest =/= io.in.RegAddr2 && io.wbIn.RegDest =/= 0.U) {
     opForward2 := io.wbIn.RegVal
   }.otherwise {
     opForward2 := io.in.RegVal2
