@@ -45,9 +45,9 @@ class InstructionFetch extends MultiIOModule {
     * 
     * You should expand on or rewrite the code below.
     */
-  io.out.pc := PC
+  io.out.pc := Mux(io.stall, Old, PC)
 
-  IMEM.io.instructionAddress := Mux(io.stall, Old, PC)
+  IMEM.io.instructionAddress := io.out.pc 
   val instruction = Wire(new Instruction)
   instruction := IMEM.io.instruction.asTypeOf(new Instruction)
   io.out.instruction := Mux(io.squash, Instruction.NOP, instruction)

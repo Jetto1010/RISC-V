@@ -19,7 +19,7 @@ class IDEXBundle extends Bundle {
   val RegAddr1 = UInt(5.W)
   val RegAddr2 = UInt(5.W)
   val RegDest = UInt(5.W)
-}
+    }
 
 class EXMEMBundle extends Bundle {
   val controlSignals = new ControlSignals
@@ -28,14 +28,14 @@ class EXMEMBundle extends Bundle {
   val RegVal = UInt(32.W)
   val RegDest = UInt(5.W)
   val NewPC = UInt(32.W)
-}
+    }
 
 class MEMWBBundle extends Bundle {
   val controlSignals = new ControlSignals
   val ALUOut = UInt(32.W)
   val dataMEM = UInt(32.W)
   val RegDest = UInt(5.W)
-}
+    }
 
 class MEMIFBundle extends Bundle {
   val NewPC = UInt(32.W)

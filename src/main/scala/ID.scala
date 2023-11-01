@@ -20,6 +20,7 @@ class InstructionDecode extends MultiIOModule {
     new Bundle {
       val in = Input(new IFIDBundle)
       val wbin = Input(new WBIDBundle)
+      val squash = Input(Bool())
       
       val out = Output(new IDEXBundle)
       val stall = Output(Bool())
@@ -58,7 +59,7 @@ class InstructionDecode extends MultiIOModule {
     ImmFormat.JTYPE -> decoder.instruction.immediateJType,
     ImmFormat.DC    -> 0.S(32.W)
   )).asUInt
-  
+    
   io.out.pc := io.in.pc
   io.out.controlSignals := decoder.controlSignals
   io.out.BranchType := decoder.branchType
@@ -72,8 +73,8 @@ class InstructionDecode extends MultiIOModule {
   io.out.RegDest := decoder.instruction.registerRd
   
   io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
-  PreviousMemRead := io.out.controlSignals.memRead
-  PreviousRegDest := io.out.RegDest
+  PreviousMemRead := Mux(io.squash, Bool(false), io.out.controlSignals.memRead)
+  PreviousRegDest := Mux(io.squash, 0.U(5.W), io.out.RegDest)
 }
 
 

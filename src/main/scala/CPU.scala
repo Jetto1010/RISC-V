@@ -71,8 +71,11 @@ class CPU extends MultiIOModule {
 
   // Stall and squash
   val squash = RegInit(Bool(), Bool(false))
+  val squash2 = RegInit(Bool(), Bool(false))
   IF.io.stall   := ID.io.stall
-  IDEX.io.stall := ID.io.stall || EX.io.out.BranchOut || squash 
-  IF.io.squash  := EX.io.out.BranchOut
+  IDEX.io.stall := ID.io.stall || EX.io.out.BranchOut || squash || squash2
+  ID.io.squash := ID.io.stall || EX.io.out.BranchOut || squash || squash2
+  IF.io.squash  := EX.io.out.BranchOut 
   squash := EX.io.out.BranchOut
+  squash2 := squash
 }
