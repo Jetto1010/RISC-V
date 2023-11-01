@@ -26,13 +26,7 @@ class IDEX extends Module {
   )
 
   val delay = Reg(new IDEXBundle)
-  when(io.stall){
-    delay := 0.U.asTypeOf(new IDEXBundle)
-    delay.pc := io.in.pc
-    delay.Imm := io.in.Imm
-  }.otherwise{
-    delay := io.in
-  }
+  delay := Mux(io.stall, 0.U.asTypeOf(new IDEXBundle), io.in)
   io.out := delay
 }
 
