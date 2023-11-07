@@ -26,11 +26,12 @@ class CPU extends MultiIOModule {
   val EXMEM  = Module(new EXMEM)
   val MEMWB = Module(new MEMWB)
 
-  val IF = Module(new InstructionFetch)
+  val IF  = Module(new InstructionFetch)
   val ID  = Module(new InstructionDecode)
   val EX  = Module(new Execution)
   val MEM = Module(new MemoryFetch)
   val WB  = Module(new WriteBack)
+  val BP  = Module(new BranchPredictor)
 
 
   /**
@@ -72,10 +73,17 @@ class CPU extends MultiIOModule {
   // Stall and squash
   val squash = RegInit(Bool(), Bool(false))
   val squash2 = RegInit(Bool(), Bool(false))
+  val stall = Wire(Bool())
+  stall := ID.io.stall || EX.io.out.BranchOut || squash || squash2
   IF.io.stall   := ID.io.stall
-  IDEX.io.stall := ID.io.stall || EX.io.out.BranchOut || squash || squash2
-  ID.io.squash := ID.io.stall || EX.io.out.BranchOut || squash || squash2
+  IDEX.io.stall := stall
+  ID.io.squash := stall
   IF.io.squash  := EX.io.out.BranchOut 
   squash := EX.io.out.BranchOut
   squash2 := squash
+
+  // Branch Prediction
+  BP.io.PC := IF.out.pc
+  BP.io.Taken := MEM.out.PCSel
+  BP.io.Update := Mux(MEM.out.controlSignals.branch, MEM.outPC, 1.U)
 }

@@ -71,7 +71,7 @@ class InstructionDecode extends MultiIOModule {
   io.out.RegVal1 := Mux(io.wbin.RegDest === io.in.instruction.registerRs1 && io.wbin.RegWrite, io.wbin.Result, registers.io.readData1)
   io.out.RegVal2 := Mux(io.wbin.RegDest === io.in.instruction.registerRs2 && io.wbin.RegWrite, io.wbin.Result, registers.io.readData2)
   io.out.RegDest := decoder.instruction.registerRd
-  
+    
   io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
   PreviousMemRead := Mux(io.squash, Bool(false), io.out.controlSignals.memRead)
   PreviousRegDest := Mux(io.squash, 0.U(5.W), io.out.RegDest)
