@@ -19,7 +19,7 @@ import LogParser._
 
 object Manifest {
 
-  val singleTest = "load.s"
+  val singleTest = "branchProfiling.s"
 
   val nopPadded = false
 
@@ -27,7 +27,7 @@ object Manifest {
     printIfSuccessful  = true,
     printErrors        = true,
     printParsedProgram = false,
-    printVMtrace       = true,
+    printVMtrace       = false,
     printVMfinal       = false,
     printMergedTrace   = false,
     printBinary        = false,

@@ -83,7 +83,25 @@ class CPU extends MultiIOModule {
   squash2 := squash
 
   // Branch Prediction
-  BP.io.PC := IF.out.pc
-  BP.io.Taken := MEM.out.PCSel
-  BP.io.Update := Mux(MEM.out.controlSignals.branch, MEM.outPC, 1.U)
+  BP.io.PC := MEM.io.outPC
+  BP.io.Taken := MEM.io.outIF.PCSel 
+  BP.io.Update := EXMEM.io.out.controlSignals.branch 
+
+  val number   = RegInit(UInt(12.W), 0.U)
+  val right    = RegInit(UInt(12.W), 0.U)
+  val notTaken = RegInit(UInt(12.W), 0.U)
+
+  when(EXMEM.io.out.controlSignals.branch) {
+    when(MEM.io.outIF.PCSel === BP.io.Predict) {
+      right := right + 1.U
+    }
+    when(!MEM.io.outIF.PCSel) {
+      notTaken := notTaken + 1.U
+    }
+    number := number + 1.U
+  }
+
+  when(number === 1738.U && EXMEM.io.out.controlSignals.branch) {
+    printf("Number: %d | Right %d | Not Taken: %d \n", number, right, notTaken)
+  }
 }

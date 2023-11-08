@@ -19,7 +19,6 @@ class IDEXBundle extends Bundle {
   val RegAddr1 = UInt(5.W)
   val RegAddr2 = UInt(5.W)
   val RegDest = UInt(5.W)
-  val NewPC = UInt(32.W)
 }
 
 class EXMEMBundle extends Bundle {
