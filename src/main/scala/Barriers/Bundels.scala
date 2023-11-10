@@ -19,6 +19,8 @@ class IDEXBundle extends Bundle {
   val RegAddr1 = UInt(5.W)
   val RegAddr2 = UInt(5.W)
   val RegDest = UInt(5.W)
+  val IFBundle = new IFBundle
+  val BranchPredicted = Bool()
 }
 
 class EXMEMBundle extends Bundle {
@@ -29,6 +31,7 @@ class EXMEMBundle extends Bundle {
   val RegVal = UInt(32.W)
   val RegDest = UInt(5.W)
   val NewPC = UInt(32.W)
+  val BranchTaken = Bool()
 }
 
 class MEMWBBundle extends Bundle {
@@ -38,7 +41,7 @@ class MEMWBBundle extends Bundle {
   val RegDest = UInt(5.W)
 }
 
-class MEMIFBundle extends Bundle {
+class IFBundle extends Bundle {
   val NewPC = UInt(32.W)
   val PCSel = Bool()
 }

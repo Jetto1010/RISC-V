@@ -19,5 +19,5 @@ class SaturatedCounter extends MultiIOModule {
         Counter := Counter - 1.U
     }
 
-    io.Predict := Mux(Counter >= 2.U, Bool(true), Bool(false))
+    io.Predict := Mux(Counter >= 2.U, true.B, false.B)
 }

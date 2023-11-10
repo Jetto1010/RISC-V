@@ -6,6 +6,7 @@ class BranchPredictor extends MultiIOModule {
     val io = IO(
         new Bundle {
             val PC = Input(UInt(32.W))
+            val UpdatePC = Input(UInt(32.W))
             val Update = Input(Bool())
             val Taken = Input(Bool())
 
@@ -16,13 +17,12 @@ class BranchPredictor extends MultiIOModule {
     val PatternHistoryTable = Vec.fill(32){Module(new SaturatedCounter).io}
 
     for(i <- 0 until 32) {
-        PatternHistoryTable(i).Taken := Bool(false)
-        PatternHistoryTable(i).Update := Bool(false)
+        PatternHistoryTable(i).Taken := false.B
+        PatternHistoryTable(i).Update := false.B
     }
 
-    val address = io.PC(5, 1)
-    io.Predict := PatternHistoryTable(address).Predict
+    io.Predict := PatternHistoryTable(io.PC(5, 1)).Predict
 
-    PatternHistoryTable(address).Taken := io.Taken
-    PatternHistoryTable(address).Update := io.Update
+    PatternHistoryTable(io.UpdatePC(5, 1)).Taken := io.Taken
+    PatternHistoryTable(io.UpdatePC(5, 1)).Update := io.Update
 } 

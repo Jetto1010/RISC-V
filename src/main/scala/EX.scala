@@ -68,17 +68,18 @@ class Execution extends MultiIOModule {
     branchType.lt   -> (op1.asSInt <  op2.asSInt),
     branchType.gteu -> (op1 >= op2),
     branchType.ltu  -> (op1 <  op2),
-    branchType.jal  -> (Bool(true)),
-    branchType.jalr -> (Bool(true)),
-    branchType.DC   -> (Bool(false)),
+    branchType.jal  -> (true.B),
+    branchType.jalr -> (true.B),
+    branchType.DC   -> (false.B),
   )
-  
+
+  val BranchResult = MuxLookup(io.in.BranchType, false.B, BranchMap) && io.in.controlSignals.branch
   io.out.pc := io.in.pc
   io.out.controlSignals := io.in.controlSignals
-  io.out.BranchOut := MuxLookup(io.in.BranchType, Bool(false), BranchMap) && (io.in.controlSignals.branch || io.in.controlSignals.jump)
+  io.out.BranchOut := Mux(io.in.BranchPredicted, Mux(BranchResult, false.B, true.B), Mux(BranchResult, true.B, false.B)) || io.in.controlSignals.jump
   io.out.ALUOut := Mux(io.in.controlSignals.jump, op1, MuxLookup(io.in.ALUop, 0.U(32.W), ALUopMap))
-
   io.out.RegVal := opForward2
   io.out.RegDest := io.in.RegDest
-  io.out.NewPC := Mux(io.in.BranchType === branchType.jalr, (op1 + io.in.Imm) & "hfffffffe".U, io.in.pc + io.in.Imm)
+  io.out.NewPC := Mux(io.in.BranchPredicted && !BranchResult, io.in.pc + 4.U, Mux(io.in.BranchType === branchType.jalr, (op1 + io.in.Imm) & "hfffffffe".U, io.in.IFBundle.NewPC))
+  io.out.BranchTaken := Mux(BranchResult, true.B, false.B)
 }

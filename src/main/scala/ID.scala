@@ -21,6 +21,7 @@ class InstructionDecode extends MultiIOModule {
       val in = Input(new IFIDBundle)
       val wbin = Input(new WBIDBundle)
       val squash = Input(Bool())
+      val branchPredict = Input(Bool())
       
       val out = Output(new IDEXBundle)
       val stall = Output(Bool())
@@ -30,7 +31,7 @@ class InstructionDecode extends MultiIOModule {
   val registers = Module(new Registers)
   val decoder   = Module(new Decoder).io
 
-  val PreviousMemRead = RegInit(Bool(), Bool(false))
+  val PreviousMemRead = RegInit(Bool(), false.B)
   val PreviousRegDest = RegInit(UInt(5.W), 0.U)
 
   /**RegDest
@@ -73,8 +74,18 @@ class InstructionDecode extends MultiIOModule {
   io.out.RegDest := decoder.instruction.registerRd
     
   io.stall := PreviousMemRead && (PreviousRegDest === io.in.instruction.registerRs1 || PreviousRegDest === io.in.instruction.registerRs2)
-  PreviousMemRead := Mux(io.squash, Bool(false), io.out.controlSignals.memRead)
+  PreviousMemRead := Mux(io.squash, false.B, io.out.controlSignals.memRead)
   PreviousRegDest := Mux(io.squash, 0.U(5.W), io.out.RegDest)
+
+  io.out.IFBundle.NewPC := io.in.pc + io.out.Imm
+  when(io.branchPredict && io.out.controlSignals.branch) {
+    printf("PC from ID: %d \n", io.out.IFBundle.NewPC)
+    io.out.IFBundle.PCSel := true.B
+    io.out.BranchPredicted := true.B
+  }.otherwise {
+    io.out.IFBundle.PCSel := false.B
+    io.out.BranchPredicted := false.B
+  }
 }
 
 

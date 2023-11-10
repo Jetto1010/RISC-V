@@ -55,6 +55,7 @@ class CPU extends MultiIOModule {
   /**
     TODO: Your code here
     */
+  IF.io.in <> MEM.io.outIF
   IFID.io.in  <> IF.io.out
   ID.io.in    <> IFID.io.out
   IDEX.io.in  <> ID.io.out
@@ -64,44 +65,52 @@ class CPU extends MultiIOModule {
   MEMWB.io.in <> MEM.io.out
   WB.io.in    <> MEMWB.io.out
   ID.io.wbin  <> WB.io.out
-  IF.io.in    <> MEM.io.outIF
 
   // Forward 
   EX.io.memIn <> MEM.io.outEX
   EX.io.wbIn  <> WB.io.outEX
 
   // Stall and squash
-  val squash = RegInit(Bool(), Bool(false))
-  val squash2 = RegInit(Bool(), Bool(false))
+  val squash = RegInit(Bool(), false.B)
+  val squash2 = RegInit(Bool(), false.B)
   val stall = Wire(Bool())
-  stall := ID.io.stall || EX.io.out.BranchOut || squash || squash2
-  IF.io.stall   := ID.io.stall
-  IDEX.io.stall := stall
+  stall := ID.io.stall || EX.io.out.BranchOut || squash || squash2 || IDEX.io.out.BranchPredicted
+  IF.io.stall   := ID.io.stall 
+  IDEX.io.stall := stall 
   ID.io.squash := stall
-  IF.io.squash  := EX.io.out.BranchOut 
   squash := EX.io.out.BranchOut
   squash2 := squash
 
   // Branch Prediction
-  BP.io.PC := MEM.io.outPC
-  BP.io.Taken := MEM.io.outIF.PCSel 
+  BP.io.PC := IFID.io.out.pc
+  ID.io.branchPredict := BP.io.Predict
+  BP.io.UpdatePC := EXMEM.io.out.pc
+  BP.io.Taken := EXMEM.io.out.BranchTaken
   BP.io.Update := EXMEM.io.out.controlSignals.branch 
 
+  IF.io.fromID := false.B
+  when(MEM.io.outIF.PCSel) {
+    IF.io.in <> MEM.io.outIF
+  }.elsewhen(IDEX.io.out.BranchPredicted) {
+    IF.io.in <> IDEX.io.out.IFBundle
+    IF.io.fromID := true.B
+  }
+  // Branch Prediction Checker
   val number   = RegInit(UInt(12.W), 0.U)
   val right    = RegInit(UInt(12.W), 0.U)
   val notTaken = RegInit(UInt(12.W), 0.U)
 
   when(EXMEM.io.out.controlSignals.branch) {
-    when(MEM.io.outIF.PCSel === BP.io.Predict) {
+    when(!EXMEM.io.out.BranchOut) {
       right := right + 1.U
     }
-    when(!MEM.io.outIF.PCSel) {
+    when(!EXMEM.io.out.BranchTaken) {
       notTaken := notTaken + 1.U
     }
     number := number + 1.U
   }
 
-  when(number === 1738.U && EXMEM.io.out.controlSignals.branch) {
+  when(EXMEM.io.out.controlSignals.branch) { // 1738 is the number of branches - 1 in branchProfiler
     printf("Number: %d | Right %d | Not Taken: %d \n", number, right, notTaken)
   }
 }
