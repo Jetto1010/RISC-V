@@ -55,7 +55,7 @@ class CPU extends MultiIOModule {
   /**
     TODO: Your code here
     */
-  IF.io.in <> MEM.io.outIF
+  IF.io.in    <> MEM.io.outIF
   IFID.io.in  <> IF.io.out
   ID.io.in    <> IFID.io.out
   IDEX.io.in  <> ID.io.out
@@ -79,7 +79,7 @@ class CPU extends MultiIOModule {
   IDEX.io.stall := stall 
   ID.io.squash := stall
   squash := EX.io.out.BranchOut
-  squash2 := squash
+  squash2 := squash || IDEX.io.out.BranchPredicted
 
   // Branch Prediction
   BP.io.PC := IFID.io.out.pc
@@ -88,12 +88,10 @@ class CPU extends MultiIOModule {
   BP.io.Taken := EXMEM.io.out.BranchTaken
   BP.io.Update := EXMEM.io.out.controlSignals.branch 
 
-  IF.io.fromID := false.B
   when(MEM.io.outIF.PCSel) {
     IF.io.in <> MEM.io.outIF
   }.elsewhen(IDEX.io.out.BranchPredicted) {
     IF.io.in <> IDEX.io.out.IFBundle
-    IF.io.fromID := true.B
   }
   // Branch Prediction Checker
   val number   = RegInit(UInt(12.W), 0.U)
@@ -110,7 +108,7 @@ class CPU extends MultiIOModule {
     number := number + 1.U
   }
 
-  when(EXMEM.io.out.controlSignals.branch) { // 1738 is the number of branches - 1 in branchProfiler
+  when(number === 1738.U && EXMEM.io.out.controlSignals.branch) { // 1738 is the number of branches - 1 in branchProfiler
     printf("Number: %d | Right %d | Not Taken: %d \n", number, right, notTaken)
   }
 }

@@ -79,7 +79,6 @@ class InstructionDecode extends MultiIOModule {
 
   io.out.IFBundle.NewPC := io.in.pc + io.out.Imm
   when(io.branchPredict && io.out.controlSignals.branch) {
-    printf("PC from ID: %d \n", io.out.IFBundle.NewPC)
     io.out.IFBundle.PCSel := true.B
     io.out.BranchPredicted := true.B
   }.otherwise {
